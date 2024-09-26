@@ -39,16 +39,21 @@ authRouter.endpoints = [
   },
 ];
 
-async function setAuthUser(req, res, next) {
+async function setAuthUser(req, res, next)
+{
   const token = readAuthToken(req);
-  if (token) {
-    try {
-      if (await DB.isLoggedIn(token)) {
+  if (token)
+  {
+    try
+    {
+      if (await DB.isLoggedIn(token))
+      {
         // Check the database to make sure the token is valid.
         req.user = jwt.verify(token, config.jwtSecret);
         req.user.isRole = (role) => !!req.user.roles.find((r) => r.role === role);
       }
-    } catch {
+    } catch
+    {
       req.user = null;
     }
   }
@@ -56,8 +61,10 @@ async function setAuthUser(req, res, next) {
 }
 
 // Authenticate token
-authRouter.authenticateToken = (req, res, next) => {
-  if (!req.user) {
+authRouter.authenticateToken = (req, res, next) =>
+{
+  if (!req.user)
+  {
     return res.status(401).send({ message: 'unauthorized' });
   }
   next();
@@ -66,9 +73,11 @@ authRouter.authenticateToken = (req, res, next) => {
 // register
 authRouter.post(
   '/',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) =>
+  {
     const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    if (!name || !email || !password)
+    {
       return res.status(400).json({ message: 'name, email, and password are required' });
     }
     const user = await DB.addUser({ name, email, password, roles: [{ role: Role.Diner }] });
@@ -80,7 +89,8 @@ authRouter.post(
 // login
 authRouter.put(
   '/',
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) =>
+  {
     const { email, password } = req.body;
     const user = await DB.getUser(email, password);
     const auth = await setAuth(user);
@@ -92,7 +102,8 @@ authRouter.put(
 authRouter.delete(
   '/',
   authRouter.authenticateToken,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) =>
+  {
     clearAuth(req);
     res.json({ message: 'logout successful' });
   })
@@ -102,11 +113,13 @@ authRouter.delete(
 authRouter.put(
   '/:userId',
   authRouter.authenticateToken,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res) =>
+  {
     const { email, password } = req.body;
     const userId = Number(req.params.userId);
     const user = req.user;
-    if (user.id !== userId && !user.isRole(Role.Admin)) {
+    if (user.id !== userId && !user.isRole(Role.Admin))
+    {
       return res.status(403).json({ message: 'unauthorized' });
     }
 
@@ -115,22 +128,27 @@ authRouter.put(
   })
 );
 
-async function setAuth(user) {
+async function setAuth(user)
+{
   const token = jwt.sign(user, config.jwtSecret);
   await DB.loginUser(user.id, token);
   return token;
 }
 
-async function clearAuth(req) {
+async function clearAuth(req)
+{
   const token = readAuthToken(req);
-  if (token) {
+  if (token)
+  {
     await DB.logoutUser(token);
   }
 }
 
-function readAuthToken(req) {
+function readAuthToken(req)
+{
   const authHeader = req.headers.authorization;
-  if (authHeader) {
+  if (authHeader)
+  {
     return authHeader.split(' ')[1];
   }
   return null;
