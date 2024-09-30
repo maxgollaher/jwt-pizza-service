@@ -7,6 +7,8 @@ const { DB } = require('../database/database.js');
 
 
 let menuItem;
+let testUser;
+let testUserAuthToken;
 
 beforeAll(async () =>
 {
