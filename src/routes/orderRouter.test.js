@@ -43,5 +43,6 @@ test('addMenuItem', async () =>
         .send({ ...menuItem, testUser })
         .set('Authorization', `Bearer ${testUserAuthToken}`);
     expect(res.status).toBe(200);
-    expect(res.body[0]).toMatchObject(menuItem);
+    const item = res.body.find(f => f.title === menuItem.title);
+    expect(item).toMatchObject(menuItem);
 });
