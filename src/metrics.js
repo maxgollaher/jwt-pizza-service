@@ -84,9 +84,7 @@ class Metrics
         this.latencyMetrics(buf);
 
         const metrics = buf.toString('\n');
-        this.sendMetricToGrafana(metrics).then(() => {
-          this.resetLatencyMetrics();
-        });
+        this.sendMetricToGrafana(metrics);
       } catch (error)
       {
         console.log('Error sending metrics', error);
@@ -120,6 +118,7 @@ class Metrics
         {
           console.log(`Pushed ${metric}`);
         }
+        this.resetLatencyMetrics();
       })
       .catch((error) =>
       {
