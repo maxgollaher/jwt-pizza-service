@@ -63,6 +63,12 @@ class Metrics
     buf.addMetric('auth', 'failure', 'total', this.authAttempts.failure);
   }
 
+  latencyMetrics(buf)
+  {
+    buf.addMetric('latency', 'service', 'total', this.latency.service);
+    buf.addMetric('latency', 'pizza', 'total', this.latency.pizza);
+  }
+
   sendMetricsPeriodically(period)
   {
     const timer = setInterval(() =>
@@ -75,6 +81,7 @@ class Metrics
         this.userMetrics(buf);
         this.purchaseMetrics(buf);
         this.authMetrics(buf);
+        this.latencyMetrics(buf);
 
         const metrics = buf.toString('\n');
         this.sendMetricToGrafana(metrics);
