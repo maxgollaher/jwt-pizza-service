@@ -77,6 +77,7 @@ orderRouter.get(
 orderRouter.post(
   '/',
   authRouter.authenticateToken,
+  metrics.measurePizzaLatency,
   asyncHandler(async (req, res) => {
     const orderReq = req.body;
     const order = await DB.addDinerOrder(req.user, orderReq);

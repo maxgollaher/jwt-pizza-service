@@ -197,7 +197,7 @@ metrics.sendMetricsPeriodically(10000);
 function requestTracker(req, res, next)
 {
   metrics.incrementRequests(req.method);
-  next();
+  metrics.measureServiceLatency(next);
 }
 
 // Export the metrics class and the middleware

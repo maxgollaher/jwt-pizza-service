@@ -101,7 +101,7 @@ authRouter.put(
     metrics.incrementActiveUsers();
     metrics.incrementAuthAttempts(true);
     res.json({ user: user, token: auth });
-    } catch (error) {
+    } catch {
       metrics.incrementAuthAttempts(false);
     }
   })
