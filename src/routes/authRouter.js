@@ -95,10 +95,15 @@ authRouter.put(
   asyncHandler(async (req, res) =>
   {
     const { email, password } = req.body;
+    try {
     const user = await DB.getUser(email, password);
     const auth = await setAuth(user);
     metrics.incrementActiveUsers();
+    metrics.incrementAuthAttempts(true);
     res.json({ user: user, token: auth });
+    } catch (error) {
+      metrics.incrementAuthAttempts(false);
+    }
   })
 );
 
