@@ -162,26 +162,22 @@ class Metrics
   }
 
   // Method to measure and update latency for the 'service' category
-  measureServiceLatency(req, res, next) {
+  measureServiceLatency(callback)
+  {
     const start = Date.now();
-    res.on('finish', () => {
-      const end = Date.now();
-      this.latency.service = end - start;
-    });
-    next();
+    callback();
+    const end = Date.now();
+    this.latency.service = end - start;
   }
 
   // Method to measure and update latency for the 'pizza' category
-  measurePizzaLatency(req, res, next) {
+  measurePizzaLatency(callback)
+  {
     const start = Date.now();
-    res.on('finish', () => {
-      const end = Date.now();
-      const latency = end - start;
-      this.latency.pizza = latency;
-    });
-    next();
+    callback();
+    const end = Date.now();
+    this.latency.pizza = end - start;
   }
-    
 }
 
 class MetricBuilder {
