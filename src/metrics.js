@@ -203,7 +203,7 @@ function latencyTracker(req, res, next)
   res.on('finish', () =>
   {
     const duration = Date.now() - start;
-    metrics.latency.service = Math.max(metrics.latency.service, duration);
+    metrics.latency.service = duration;
   });
   next();
 }

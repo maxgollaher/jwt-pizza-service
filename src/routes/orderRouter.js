@@ -89,7 +89,7 @@ orderRouter.post(
     const j = await r.json();
     if (r.ok) {
       const latency = Date.now() - start;
-      metrics.latency.pizza = Math.max(metrics.latency.pizza, latency);
+      metrics.latency.pizza = latency;
       metrics.incrementPizzaMetrics(true, false, orderReq.items.reduce((acc, item) => acc + item.price, 0));
       res.send({ order, jwt: j.jwt, reportUrl: j.reportUrl });
     } else {
