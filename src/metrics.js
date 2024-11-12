@@ -205,9 +205,6 @@ function latencyTracker(req, res, next)
   {
     const duration = Date.now() - start;
     metrics.latency.service = Math.max(metrics.latency.service, duration);
-    if (req.originalUrl === '/api/order' && req.method === 'POST') {
-      metrics.latency.pizza = Math.max(metrics.latency.pizza, duration);
-    }
   });
   next();
 }
