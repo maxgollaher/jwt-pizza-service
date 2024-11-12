@@ -160,24 +160,6 @@ class Metrics
   {
     this.activeUsers--;
   }
-
-  // Method to measure and update latency for the 'service' category
-  measureServiceLatency(callback)
-  {
-    const start = Date.now();
-    callback();
-    const end = Date.now();
-    this.latency.service = end - start;
-  }
-
-  // Method to measure and update latency for the 'pizza' category
-  measurePizzaLatency(callback)
-  {
-    const start = Date.now();
-    callback();
-    const end = Date.now();
-    this.latency.pizza = end - start;
-  }
 }
 
 class MetricBuilder {
@@ -204,7 +186,7 @@ metrics.sendMetricsPeriodically(10000);
 function requestTracker(req, res, next)
 {
   metrics.incrementRequests(req.method);
-  metrics.measureServiceLatency(next);
+  next();
 }
 
 // Export the metrics class and the middleware
