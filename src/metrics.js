@@ -84,7 +84,9 @@ class Metrics
         this.latencyMetrics(buf);
 
         const metrics = buf.toString('\n');
-        this.sendMetricToGrafana(metrics);
+        this.sendMetricToGrafana(metrics).then(() => {
+          this.resetLatencyMetrics();
+        });
       } catch (error)
       {
         console.log('Error sending metrics', error);
@@ -92,6 +94,12 @@ class Metrics
     }, period);
 
     timer.unref();
+  }
+
+  resetLatencyMetrics()
+  {
+    this.latency.service = 0;
+    this.latency.pizza = 0;
   }
 
   
@@ -196,10 +204,9 @@ function latencyTracker(req, res, next)
   res.on('finish', () =>
   {
     const duration = Date.now() - start;
-    metrics.latency.service = duration;
-    if (req.path === '/api/order' && req.method === 'POST')
-    {
-      metrics.latency.pizza = duration;
+    metrics.latency.service = Math.max(metrics.latency.service, duration);
+    if (req.originalUrl === '/api/order' && req.method === 'POST') {
+      metrics.latency.pizza = Math.max(metrics.latency.pizza, duration);
     }
   });
   next();
