@@ -3,6 +3,7 @@ const config = require('../config.js');
 const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
+const { metrics } = require('../metrics.js');
 
 const orderRouter = express.Router();
 
@@ -86,8 +87,10 @@ orderRouter.post(
     });
     const j = await r.json();
     if (r.ok) {
+      metrics.incrementPizzaMetrics(true, false, orderReq.items.reduce((acc, item) => acc + item.price, 0));
       res.send({ order, jwt: j.jwt, reportUrl: j.reportUrl });
     } else {
+      metrics.incrementPizzaMetrics(false, true);
       res.status(500).send({ message: 'Failed to fulfill order at factory', reportUrl: j.reportUrl });
     }
   })
