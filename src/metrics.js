@@ -189,5 +189,21 @@ function requestTracker(req, res, next)
   next();
 }
 
+// Middleware to track latency
+function latencyTracker(req, res, next)
+{
+  const start = Date.now();
+  res.on('finish', () =>
+  {
+    const duration = Date.now() - start;
+    metrics.latency.service = duration;
+    if (req.path === '/api/order' && req.method === 'POST')
+    {
+      metrics.latency.pizza = duration;
+    }
+  });
+  next();
+}
+
 // Export the metrics class and the middleware
-module.exports = { metrics, requestTracker };
+module.exports = { metrics, requestTracker, latencyTracker };
